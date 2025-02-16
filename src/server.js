@@ -1,19 +1,22 @@
-import express from 'express'
-import { config } from 'dotenv';
+import _conf from './config/config.js';
 import { connectDB, disconnectDB } from './config/db.js';
+import app from './app.js';
 
-const app = express();
-config()
-const port = process.env.PORT || 3000;
-await connectDB();
+const port = _conf.port || 3000;
 
 app.get('/', (req, res) => {
     res.send(`<h1> Hello world </h1>`);
 });
 
-app.listen(port, () => {
-    console.log(`Server started at ${port}`);
-});
+const startServer = async () => {
+    await connectDB();
+
+    app.listen(port, () => {
+        console.log(`Server started at ${port}`);
+    });
+}
+
+startServer();
 
 const gracefulShutDown = async (signal) => {
     try {
